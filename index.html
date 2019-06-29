@@ -1,0 +1,184 @@
+<html>
+	<head></head>
+	<body>
+		<style>
+	.black {
+		background:black;
+	}
+
+	table {
+		width:100vw;
+		height:100vh;
+	}
+
+	.boardSize {
+		padding:20px;
+	}
+</style>
+
+	<div class="boardSize">
+	  <input type="number" min="2" max="12" value="4" placeholder="columns" class="cols">
+	  <input type="number" min="2" max="12" value="6" placeholder="rows" class="rows">
+	  <button id="play" class='play'>Play</button>
+	</div>
+	<div id="board"></div>
+
+
+<script>
+
+var board = {
+  rows: 6,
+  cols: 6
+}
+
+let playGame = document.querySelector('#play');
+var rowsInput = document.querySelector('.rows');
+var colsInput = document.querySelector('.cols');
+
+var createTable = function() {
+
+	console.log('Create');
+  // Variables
+  let currentBlockrendered = 0; 
+  let winningBlockNode = null;
+  
+  // Assign a winning block
+  let blocks = board.rows * board.cols;
+  let winningBlock = Math.floor(Math.random() * Math.floor(blocks));
+  
+  let loosingBlock = null;
+  
+  // If minesweeper???
+	// Assign a winning block
+while (loosingBlock === null) {
+    
+    let generatedBlockCoordinate = Math.floor(Math.random() * Math.floor(blocks));
+    
+    if (generatedBlockCoordinate !== winningBlock) {
+      loosingBlock = generatedBlockCoordinate;
+    }
+  }
+  console.log('winningBlock: ' + winningBlock);
+  //console.log('loosingBlock: ' + loosingBlock);
+  
+
+  // Create the table.
+  var table = document.createElement("table");
+  
+  var canvasElem = document.querySelector('#board');
+  canvasElem.innerHTML = '';
+
+  // iterate to create the rows
+  for (var rows = 0; rows < board.rows; rows++) {
+    //append rows to the table element depending on value of board.rows
+    let rowY = rows;
+
+    var tr = document.createElement('tr');
+    for (var cols = 0; cols < board.cols; cols++) {
+      //create and append columns to table depending on 
+      let rowX = cols;
+                  
+      var td = document.createElement('td');
+      
+      // Create Block
+      currentBlockrendered ++;
+      
+      if (winningBlock == currentBlockrendered) {
+        console.log('The winning block is: ' + currentBlockrendered + ' ---- ' + winningBlock);
+        // Assign this block as the winning block
+        td.setAttribute('winning-block', 'true');
+        winningBlockNode = td;
+      }
+      
+      td.setAttribute('data-x', '' + rowX + '');
+      td.setAttribute('data-y', '' + rowY + '');
+
+      if (rows % 2 == cols % 2) {
+        td.className = "white";
+      } else {
+        td.className = "black";
+      }
+      td.addEventListener('click', function(elem) {
+      
+      	
+        console.log(this);
+      	let elem_x = this.getAttribute('data-x');
+        let elem_y = this.getAttribute('data-y');
+      
+      	console.log('logger');
+      	console.log(this);
+        console.log(winningBlockNode);
+        /* console.log(elem_y); */
+        
+				if (this === winningBlockNode) {
+        
+        	// Winnning stuff here!
+          console.log('You won, son!');
+          
+        }
+        else {
+        	// Losing stuff here!
+        	console.log('you lose, sorry.');
+          
+          // Calculate steps (x, y) from winning block
+          // Your selection = elem_x, elem_y
+          
+			let wb_x = winningBlockNode.getAttribute('data-x');
+       		let wb_y = winningBlockNode.getAttribute('data-y');
+          
+          console.log('The winning block was: x=' + wb_x + ' y=' + wb_y);
+          
+          
+          console.log(elem_x);
+          console.log(wb_x);
+          
+					if(elem_x === wb_x){
+          	//Proceed
+            console.log('X OK: Proceed');
+          }
+          else if (elem_x > wb_x) {
+           // Calulate how many steps ahead
+            console.log('This many steps ahead: ' + (elem_x - wb_x));
+          }
+          else if (elem_x < wb_x) {
+          	// Calulate how many steps behind
+            console.log('This many steps behind: ' + (wb_x - elem_x));
+          }
+          
+        }
+        
+        
+        
+      });
+      
+      
+      tr.appendChild(td);
+      
+    }
+    table.appendChild(tr);
+  }
+  
+  console.log(blocks);
+  console.log(currentBlockrendered);
+  console.dir(winningBlockNode);
+  
+  
+  canvasElem.appendChild(table);
+}
+
+
+playGame.addEventListener('click', function(elem) {
+	console.log('Trigger');
+	board.rows = rowsInput.value;
+  board.cols = colsInput.value;
+  /* console.log('Test: ' + board.rows + ' ' + board.cols) */;
+  createTable();
+});
+
+
+
+
+
+</script>
+	</body>
+</html>
